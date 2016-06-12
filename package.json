@@ -1,0 +1,25 @@
+{
+  "name": "lsb",
+  "version": "1.0.0",
+  "description": "lsb stands for \"live stream browser\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goonyaa/lsb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goonyaa/lsb/issues"
+  },
+  "homepage": "https://github.com/goonyaa/lsb#readme",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "node-fetch": "^1.5.3"
+  }
+}
