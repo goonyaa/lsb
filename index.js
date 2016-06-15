@@ -6,7 +6,7 @@ var games = require('./games')
 var urls = []
 var gamesNames = []
 var type = 'stream'
-let selectedGame = ''
+var selectedGame = ''
 
 var headers = [
   {label: 'Name', value: 'name', scope: 'channel'},
@@ -51,7 +51,7 @@ var table = blessed.listtable({
 });
 
 var loadStreams = function (params) {
-  let fetchUrl = 'https://api.twitch.tv/kraken/streams'
+  var fetchUrl = 'https://api.twitch.tv/kraken/streams'
   if (params && params.game) {
     fetchUrl += '?game=' + params.game
   }
