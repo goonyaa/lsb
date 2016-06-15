@@ -31,7 +31,6 @@ var table = blessed.listtable({
   parent: screen,
   width: '100%',
   height: '100%',
-  label: 'Streams listing',
   // top: 0,
   // left: 0,
   // rows: [],
@@ -82,6 +81,7 @@ var loadStreams = function (params) {
       });
       screen.append(table)
       table.setData(data)
+      table.setLabel('Streams listing')
       table.focus()
       screen.render();
     }
@@ -105,6 +105,7 @@ screen.key('g', function(ch, key) {
   .then(function(gamesData) {
     gamesNames = gamesData.names
     table.setData(gamesData.data)
+    table.setLabel('Games listing')
     table.focus()
     screen.render()
     type = 'games'
