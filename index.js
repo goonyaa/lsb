@@ -93,9 +93,8 @@ table.on('select', function(element, index) {
     exec('livestreamer ' + urls[index - 1] + ' best', (error, stdout, stderr) => {
       //
     });
-  } else if (type === 'games') {
+  } else if (type === 'game') {
     selectedGame = gamesNames[index - 1]
-    type = 'stream'
     loadStreams({game: gamesNames[index - 1]})
   }
 });
@@ -104,17 +103,17 @@ screen.key('g', function(ch, key) {
   games(fetch)
   .then(function(gamesData) {
     gamesNames = gamesData.names
+    type = 'game'
     table.setData(gamesData.data)
     table.setLabel('Games listing')
     table.focus()
     screen.render()
-    type = 'games'
   })
 
 })
 
 screen.key('u', function(ch, key) {
-  if (type === 'games') {
+  if (type === 'game') {
     loadStreams({game: selectedGame});
   } else {
     loadStreams()
