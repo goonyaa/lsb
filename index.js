@@ -1,8 +1,12 @@
 var blessed = require('blessed');
 var fetch = require('node-fetch');
 var exec = require('child_process').exec;
+var games = require('./games')
 
 var urls = []
+var gamesNames = []
+var type = 'stream'
+let selectedGame = ''
 
 var headers = [
   {label: 'Name', value: 'name', scope: 'channel'},
@@ -20,6 +24,8 @@ var box = blessed.box({
   width: '100%',
   height: '100%'
 });
+
+// games(screen, fetch)
 
 var table = blessed.listtable({
   parent: screen,
@@ -45,7 +51,11 @@ var table = blessed.listtable({
 });
 
 var loadStreams = function (params) {
-  fetch('https://api.twitch.tv/kraken/streams')
+  let fetchUrl = 'https://api.twitch.tv/kraken/streams'
+  if (params && params.game) {
+    fetchUrl += '?game=' + params.game
+  }
+  fetch(fetchUrl)
   .then (function(response) {
     if (response.ok) {
       return response.json();
@@ -79,14 +89,41 @@ var loadStreams = function (params) {
 }
 
 table.on('select', function(element, index) {
-  exec('livestreamer ' + urls[index - 1] + ' best', (error, stdout, stderr) => {
-    //
-  });
+  if (type === 'stream') {
+    exec('livestreamer ' + urls[index - 1] + ' best', (error, stdout, stderr) => {
+      //
+    });
+  } else if (type === 'games') {
+    selectedGame = gamesNames[index - 1]
+    loadStreams({game: gamesNames[index - 1]})
+  }
 });
 
+screen.key('g', function(ch, key) {
+  games(fetch)
+  .then(function(gamesData) {
+    gamesNames = gamesData.names
+    table.setData(gamesData.data)
+    table.focus()
+    screen.render()
+    type = 'games'
+  })
+
+})
+
 screen.key('u', function(ch, key) {
-  loadStreams();
+  if (type === 'games') {
+    loadStreams({game: selectedGame});
+  } else {
+    loadStreams()
+  }
 });
+
+screen.key('r', function(ch, key) {
+  type = 'streams'
+  selectedGame = ''
+  loadStreams()
+})
 
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
   return process.exit(0);
