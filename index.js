@@ -1,19 +1,21 @@
 var blessed = require('blessed');
 var fetch = require('node-fetch');
 var exec = require('child_process').exec;
-var games = require('./games')
+var games = require('./games');
 
-var urls = []
-var gamesNames = []
-var type = 'stream'
-var selectedGame = ''
+var DEFAULT_VALUE = 'TBA';
+
+var urls = [];
+var gamesNames = [];
+var type = 'stream';
+var selectedGame = '';
 
 var headers = [
   {label: 'Name', value: 'name', scope: 'channel'},
   {label: 'Game', value: 'game', scope: 'channel'},
   {label: 'Viewers', value: 'viewers'},
   {label: 'Lang', value: 'broadcaster_language', scope: 'channel'},
-  {label: 'Description', value: 'status', scope: 'channel'}]
+  {label: 'Description', value: 'status', scope: 'channel'}];
 
 var screen = blessed.screen({
   smartCSR: true
@@ -50,9 +52,9 @@ var table = blessed.listtable({
 });
 
 var loadStreams = function (params) {
-  var fetchUrl = 'https://api.twitch.tv/kraken/streams'
+  var fetchUrl = 'https://api.twitch.tv/kraken/streams';
   if (params && params.game) {
-    fetchUrl += '?game=' + params.game
+    fetchUrl += '?game=' + params.game;
   }
   fetch(fetchUrl)
   .then (function(response) {
@@ -67,22 +69,23 @@ var loadStreams = function (params) {
       var streams = json['streams'];
       var data = streams.map(function(stream, index, s) {
         var streamData = headers.map(function(header) {
-          if (header.scope) {
-            return '' + stream[header.scope][header.value]
+          var value = header.scope ? stream[header.scope][header.value] : stream[header.value]
+          if (typeof value !== "undefined" && value !== null) {
+            return String(value);
           } else {
-            return '' + stream[header.value]
+            return DEFAULT_VALUE;
           }
-        })
-        return streamData
-      })
-      data.unshift(headers.map(function(header) {return header.label}))
+        });
+        return streamData;
+      });
+      data.unshift(headers.map(function(header) {return header.label}));
       urls = streams.map(function(stream, i, s) {
         return stream.channel.url;
       });
-      screen.append(table)
-      table.setData(data)
-      table.setLabel('Streams listing')
-      table.focus()
+      screen.append(table);
+      table.setData(data);
+      table.setLabel('Streams listing');
+      table.focus();
       screen.render();
     }
   })
@@ -90,24 +93,24 @@ var loadStreams = function (params) {
 
 table.on('select', function(element, index) {
   if (type === 'stream') {
-    exec('livestreamer ' + urls[index - 1] + ' best', (error, stdout, stderr) => {
+    exec('livestreamer ' + urls[index - 1] + ' best', function(error, stdout, stderr) {
       //
     });
   } else if (type === 'game') {
-    selectedGame = gamesNames[index - 1]
-    loadStreams({game: gamesNames[index - 1]})
+    selectedGame = gamesNames[index - 1];
+    loadStreams({game: gamesNames[index - 1]});
   }
 });
 
 screen.key('g', function(ch, key) {
   games(fetch)
   .then(function(gamesData) {
-    gamesNames = gamesData.names
-    type = 'game'
-    table.setData(gamesData.data)
-    table.setLabel('Games listing')
-    table.focus()
-    screen.render()
+    gamesNames = gamesData.names;
+    type = 'game';
+    table.setData(gamesData.data);
+    table.setLabel('Games listing');
+    table.focus();
+    screen.render();
   })
 
 })
@@ -116,14 +119,14 @@ screen.key('u', function(ch, key) {
   if (type === 'game') {
     loadStreams({game: selectedGame});
   } else {
-    loadStreams()
+    loadStreams();
   }
 });
 
 screen.key('r', function(ch, key) {
-  type = 'stream'
-  selectedGame = ''
-  loadStreams()
+  type = 'stream';
+  selectedGame = '';
+  loadStreams();
 })
 
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
