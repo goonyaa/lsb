@@ -95,6 +95,7 @@ table.on('select', function(element, index) {
     });
   } else if (type === 'games') {
     selectedGame = gamesNames[index - 1]
+    type = 'stream'
     loadStreams({game: gamesNames[index - 1]})
   }
 });
@@ -120,7 +121,7 @@ screen.key('u', function(ch, key) {
 });
 
 screen.key('r', function(ch, key) {
-  type = 'streams'
+  type = 'stream'
   selectedGame = ''
   loadStreams()
 })
