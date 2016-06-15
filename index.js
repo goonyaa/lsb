@@ -51,6 +51,8 @@ var table = blessed.listtable({
   }
 });
 
+screen.append(table);
+
 var loadStreams = function (params) {
   var fetchUrl = 'https://api.twitch.tv/kraken/streams';
   if (params && params.game) {
@@ -82,7 +84,6 @@ var loadStreams = function (params) {
       urls = streams.map(function(stream, i, s) {
         return stream.channel.url;
       });
-      screen.append(table);
       table.setData(data);
       table.setLabel('Streams listing');
       table.focus();
