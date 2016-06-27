@@ -8,7 +8,7 @@ var headers = [
 
 var loadGames = function (fetch) {
   return new Promise(function(resolve, reject) {
-    fetch('https://api.twitch.tv/kraken/games/top?limit=20')
+    fetch('https://api.twitch.tv/kraken/games/top?limit=75')
     .then (function(response) {
       if (response.ok) {
         return response.json();
