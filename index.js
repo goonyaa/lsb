@@ -105,7 +105,7 @@ var loadStreams = function (params) {
 
 table.on('select', function(element, index) {
   if (type === 'stream') {
-    exec('livestreamer ' + urls[index - 1] + ' best', function(error, stdout, stderr) {
+    exec('livestreamer ' + urls[index - 1] + ' best,1080p60', function(error, stdout, stderr) {
       //
     });
   } else if (type === 'game') {
