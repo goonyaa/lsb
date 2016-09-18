@@ -2,9 +2,12 @@ var blessed = require('blessed');
 var fetch = require('node-fetch');
 var exec = require('child_process').exec;
 var games = require('./games');
+var CLIENT_ID = require('./client_id');
 
 var DEFAULT_VALUE = 'TBA';
 var DEFAULT_SLICE_VALUE = 25;
+
+var STREAMS_URL = 'https://api.twitch.tv/kraken/streams?' + 'client_id=' + CLIENT_ID;
 
 var urls = [];
 var gamesNames = [];
@@ -19,7 +22,8 @@ var headers = [
   {label: 'Description', value: 'status', scope: 'channel', slice: true}];
 
 var screen = blessed.screen({
-  smartCSR: true
+  smartCSR: true,
+  debug: true
 });
 
 var table = blessed.listtable({
@@ -27,10 +31,6 @@ var table = blessed.listtable({
   width: '100%',
   height: '100%',
   abottom: '40px',
-  // top: 0,
-  // left: 0,
-  // rows: [],
-  // data: [],
   selectedFg: 'white',
   selectedBg: 'grey',
   keys: true,
@@ -45,43 +45,27 @@ var table = blessed.listtable({
   }
 });
 
-
-// NOTE: actually need to duplicate everything for loadGames... =(
-// var demoStatusBar = blessed.box({
-//   parent: screen,
-//   width: '100%',
-//   height: '20px', // pick some better size
-//   bottom: 0,
-//   style: {
-//     fg: 'white'
-//   }
-// });
-
 var loadStreams = function (params) {
-  var fetchUrl = 'https://api.twitch.tv/kraken/streams?limit=100';
+  var fetchUrl = STREAMS_URL;
+  fetchUrl += '&limit=100';
   if (params && params.game) {
     fetchUrl += '&game=' + params.game;
   }
-  // demoStatusBar.setContent('Listing update in progress');
   fetch(fetchUrl)
   .then (function(response) {
-    // demoStatusBar.setContent('Listing update complited');
     if (response.ok) {
       return response.json();
     }
   }, function(error) {
-    // demoStatusBar.setContent('Listing update errored');
-    //console.log(error.message);
   })
   .then (function(json) {
     if ('streams' in json) {
-      // demoStatusBar.setContent('Preparing table for display');
-      var streams = json['streams'];
+      var streams = json.streams;
       var data = streams.map(function(stream, index, s) {
         var streamData = headers.map(function(header) {
-          var value = header.scope ? stream[header.scope][header.value] : stream[header.value]
+          var value = header.scope ? stream[header.scope][header.value] : stream[header.value];
           if (typeof value !== "undefined" && value !== null) {
-            var text = String(value)
+            var text = String(value);
             return (header.slice && text.length > DEFAULT_SLICE_VALUE) ? text.slice(0, DEFAULT_SLICE_VALUE) : text;
           } else {
             return DEFAULT_VALUE;
@@ -89,23 +73,21 @@ var loadStreams = function (params) {
         });
         return streamData;
       });
-      data.unshift(headers.map(function(header) {return header.label}));
+      data.unshift(headers.map(function(header) {return header.label;}));
       urls = streams.map(function(stream, i, s) {
         return stream.channel.url;
       });
       table.setData(data);
       table.setLabel('Streams listing');
       table.focus();
-      // demoStatusBar.setContent('Table has been updated');
-      // setTimeout(function() {demoStatusBar.setContent(''); screen.render();}, 500);
       screen.render();
     }
-  })
-}
+  });
+};
 
 table.on('select', function(element, index) {
   if (type === 'stream') {
-    exec('livestreamer ' + urls[index - 1] + ' best,1080p60', function(error, stdout, stderr) {
+    exec('livestreamer ' + urls[index - 1] + ' best,720p30', function(error, stdout, stderr) {
       //
     });
   } else if (type === 'game') {
@@ -124,9 +106,8 @@ screen.key('g', function(ch, key) {
     table.setLabel('Games listing');
     table.focus();
     screen.render();
-  })
-
-})
+  });
+});
 
 screen.key('u', function(ch, key) {
   if (selectedGame) {
@@ -140,7 +121,7 @@ screen.key('r', function(ch, key) {
   type = 'stream';
   selectedGame = '';
   loadStreams();
-})
+});
 
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
   return process.exit(0);
