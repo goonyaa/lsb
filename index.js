@@ -87,7 +87,7 @@ var loadStreams = function (params) {
 
 table.on('select', function(element, index) {
   if (type === 'stream') {
-    exec('livestreamer ' + urls[index - 1] + ' best,720p30', function(error, stdout, stderr) {
+    exec('livestreamer ' + urls[index - 1] + ' best,720p30 --http-header Client-ID=' + CLIENT_ID, function (error, stdout, stderr) {
       //
     });
   } else if (type === 'game') {
