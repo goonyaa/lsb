@@ -1,0 +1,30 @@
+{
+  "url": "https://api.twitch.tv/kraken/games/top",
+  "url_params": [
+    {
+      "key": "client_id",
+      "useGlobal": true
+    },
+    {
+      "key": "limit",
+      "value": 50
+    }
+  ],
+  "schema": [
+    {
+      "label": "Game",
+      "key": "name",
+      "path": "game.name"
+    },
+    {
+      "label": "Viewers",
+      "value": "viewers",
+      "path": "viewers"
+    },
+    {
+      "label": "Channels count",
+      "value": "channels",
+      "path": "channels"
+    }
+  ]
+}

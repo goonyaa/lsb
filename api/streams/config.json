@@ -1,0 +1,45 @@
+{
+  "url": "https://api.twitch.tv/kraken/streams",
+  "url_params": [
+    {
+      "key": "client_id",
+      "useGlobal": true
+    },
+    {
+      "key": "game",
+      "getValueFromParams": true
+    },
+    {
+      "key": "limit",
+      "value": 50
+    }
+  ],
+  "schema": [
+    {
+      "label": "Name",
+      "key": "name",
+      "path": "channel.name",
+      "default": "TBA"
+    },
+    {
+      "label": "Game",
+      "key": "game",
+      "path": "channel.game"
+    },
+    {
+      "label": "Viewers",
+      "key": "viewers",
+      "path": "viewers"
+    },
+    {
+      "label": "Lang",
+      "key": "broadcaster_language",
+      "path": "channel.broadcaster_language"
+    },
+    {
+      "label": "Description",
+      "key": "status",
+      "path": "channel.status"
+    }
+  ]
+}
