@@ -7,7 +7,7 @@
     },
     {
       "key": "game",
-      "getValueFromParams": true
+      "useParams": true
     },
     {
       "key": "limit",

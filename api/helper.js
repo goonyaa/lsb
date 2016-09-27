@@ -7,8 +7,8 @@ var exists = function (something) {
 var getUrlWithParams = function(config, params) {
   params = params || {};
   var url = config.url;
-  var url_params = config.url_params;
-  if (exists(url_params)) {
+  var url_params = config.url_params || [];
+  if (url_params.length >= 1) {
     var url_params_string = url_params.map(function(param) {
       var key = param.key;
       var value;
@@ -16,7 +16,7 @@ var getUrlWithParams = function(config, params) {
         value = String(param.value) || '';
       } else if (param.useGlobal) {
         value = globalConfig[key] || '';
-      } else if (param.getValueFromParams) {
+      } else if (param.useParams) {
         value = params[key] || '';
       } else {
         value = '';
