@@ -16,7 +16,7 @@
   ],
   "schema": [
     {
-      "label": "Name",
+      "label": "Channel",
       "key": "name",
       "path": "channel.name",
       "default": "TBA"
@@ -39,7 +39,8 @@
     {
       "label": "Description",
       "key": "status",
-      "path": "channel.status"
+      "path": "channel.status",
+      "slice": 30
     }
   ]
 }

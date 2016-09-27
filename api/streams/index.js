@@ -23,7 +23,7 @@ getStreams = function(fetch, params) {
           data.push(schema.map(function(item) {
             var value = getValueByPath(stream, item.path);
             if (exists(value)) {
-              return String(value);
+              return item.slice ? String(value).slice(0, item.slice) : String(value);
             } else {
               return item.default || '??';
             }
