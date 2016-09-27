@@ -13,7 +13,7 @@ var getUrlWithParams = function(config, params) {
       var key = param.key;
       var value;
       if (exists(param.value)) {
-        value = String(param.value) || '';
+        value = param.value || '';
       } else if (param.useGlobal) {
         value = globalConfig[key] || '';
       } else if (param.useParams) {
