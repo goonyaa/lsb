@@ -3,7 +3,7 @@ var fetch = require('node-fetch');
 var exec = require('child_process').exec;
 
 var config = require('./config');
-var api = require('./api');
+var twitch = require('./twitch');
 
 var urls = [];
 var gamesNames = [];
@@ -35,7 +35,7 @@ var table = blessed.listtable({
 });
 
 var renderStreams = function (params) {
-  api.streams.get(fetch, params)
+  twitch.streams.get(fetch, params)
   .then(function(response) {
     urls = response.urls;
     table.setData(response.data);
@@ -46,7 +46,7 @@ var renderStreams = function (params) {
 };
 
 var renderGamesTop = function (params) {
-  api.games.getTop(fetch, params)
+  twitch.games.getTop(fetch, params)
   .then(function(response) {
     gamesNames = response.names;
     type = 'game';
