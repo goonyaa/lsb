@@ -20,6 +20,7 @@
   "homepage": "https://github.com/goonyaa/lsb#readme",
   "dependencies": {
     "blessed": "^0.1.81",
-    "node-fetch": "^1.5.3"
+    "node-fetch": "^1.5.3",
+    "opn": "^5.0.0"
   }
 }

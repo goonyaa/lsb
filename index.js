@@ -1,6 +1,7 @@
 var blessed = require('blessed');
 var fetch = require('node-fetch');
 var exec = require('child_process').exec;
+var opn = require('opn');
 
 var config = require('./config');
 var twitch = require('./twitch');
@@ -67,6 +68,18 @@ table.on('select', function(element, index) {
     selectedGame = gamesNames[index - 1];
     renderStreams({game: gamesNames[index - 1]});
   }
+});
+
+screen.key('b', function(ch, key) {
+  if (type !== 'stream') return;
+  var index = table.selected;
+  opn(urls[index - 1]);
+});
+
+screen.key('c', function(ch, key) {
+  if (type !== 'stream') return;
+  var index = table.selected;
+  opn(urls[index - 1] + '/chat?popout=');
 });
 
 screen.key('g', function(ch, key) {
