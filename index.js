@@ -58,10 +58,19 @@ var renderGamesTop = function (params) {
   });
 };
 
+table.on('wheeldown', function() {
+  table.down(1);
+});
+
+table.on('wheelup', function() {
+  table.up(1);
+});
+
 table.on('select', function(element, index) {
   if (type === 'stream') {
-    exec('livestreamer ' + urls[index - 1] + ' best,720p30 --http-header Client-ID=' + config.client_id, function (error, stdout, stderr) {
-      //
+    // TODO: use streamlink instead
+    exec('livestreamer ' + urls[index - 1] + ' 1080p60,900p60,720p60,best --http-header Client-ID=' + config.client_id, function (error, stdout, stderr) {
+      if (error) console.error(error);
     });
   } else if (type === 'game') {
     type = 'stream';
